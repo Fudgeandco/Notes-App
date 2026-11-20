@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Student Notes App</title>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--ind:#4338CA;--ind2:#5B4FE0;--ink:#1E1B4B;--bg:#F5F6FF;--card:#fff;--bd:#D4D8FA;--mut:#4A4880;--err:#B3261E;--fb:#8A87C9;--sh:0 2px 6px rgba(67,56,202,.14);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#EDEBFF;--bg:#14122E;--card:#1F1C45;--bd:#3A3680;--mut:#B9B6E8;--err:#FF9A90;--fb:#7C79C4}}
+:root[data-theme="dark"]{--ink:#EDEBFF;--bg:#14122E;--card:#1F1C45;--bd:#3A3680;--mut:#B9B6E8;--err:#FF9A90;--fb:#7C79C4}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg)}
+body{font-family:Lexend,Verdana,Tahoma,Arial,sans-serif;color:var(--ink);line-height:1.5;display:flex;justify-content:center;padding:16px}
+#app{width:100%;max-width:760px;min-height:450px;display:flex;flex-direction:column;background:var(--bg);border:1px solid var(--ind);border-radius:6px;overflow:hidden}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+.hd{min-height:56px;background:linear-gradient(90deg,var(--ind),var(--ind2));color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 14px 0 20px;font-weight:700;font-size:16px;box-shadow:0 2px 8px rgba(67,56,202,.3)}
+.pf{width:44px;height:36px;border:0;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center}
+.bd{flex:1;min-height:0;padding:22px clamp(16px,10vw,96px);display:flex;flex-direction:column;gap:14px;font-size:14px}
+.bd.ctr{align-items:center;justify-content:center}
+.nb{min-height:52px;background:var(--ind);display:flex;justify-content:space-around;align-items:center;padding:4px 8px}
+.nb button{background:none;border:0;color:#fff;font-size:14px;min-height:44px;padding:0 14px;border-radius:10px}
+.nb button.on{background:rgba(255,255,255,.2);font-weight:700}
+.sr{display:flex;align-items:center;gap:8px;height:48px;background:var(--card);border:1.5px solid var(--bd);border-radius:24px;box-shadow:var(--sh);padding:0 16px}
+.sr input{flex:1;min-width:0;border:0;background:none;outline:0;font-size:15px}
+.mg{border:0;background:none;padding:0;display:flex}
+.sr:focus-within,.in:focus{border-color:var(--ind);outline:2px solid var(--ind);outline-offset:1px}
+.row{display:flex;justify-content:space-between;gap:8px}
+.t{width:100px;height:80px;border:1px solid var(--bd);border-radius:14px;box-shadow:var(--sh);font-weight:700;font-size:14px;color:#1E1B4B}
+.c{text-align:left;background:var(--card);border:1px solid var(--bd);border-radius:12px;box-shadow:var(--sh);padding:10px 16px;font-size:14px}
+.c.b{font-weight:700}
+.k{font-weight:700}
+.ti{margin:0;text-align:center;font-size:22px}
+.lnk{background:none;border:0;padding:0;text-align:left;font-weight:700;display:flex;align-items:center;gap:6px;min-height:32px}
+.form{width:100%;max-width:320px;display:flex;flex-direction:column;gap:10px}
+.form h1{margin:0;text-align:center;font-size:22px}
+label{font-weight:700;display:flex;flex-direction:column;gap:6px}
+.in{height:48px;border:1.5px solid var(--fb);border-radius:12px;padding:0 14px;background:var(--card);font-size:15px;font-weight:400}
+.in.bad{border-color:var(--err)}
+.er{margin:0;color:var(--err);font-size:13px}
+.btn{height:44px;border:0;border-radius:12px;background:var(--ind);color:#fff;font-weight:700;font-size:14px;padding:0 16px}
+.mu{color:var(--mut);font-size:13px;margin:0}
+.ms{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center}
+.ms h2{margin:0;font-size:20px}
+.notes{flex:1;min-height:200px;max-height:260px;overflow-y:auto;background:var(--card);border:1px solid var(--bd);border-radius:12px;box-shadow:var(--sh);padding:12px 16px;line-height:1.7;font-size:13px}
+.notes p{margin:0 0 8px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.spin{animation:sp 1s linear infinite}
+@media (prefers-reduced-motion:reduce){.spin{animation:none}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const E=document.getElementById('app');
+let st='login',em='',sq='';
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const svg=(p,s=24)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" aria-hidden="true">${p}</svg>`;
+const IC={mag:svg('<circle cx="10" cy="10" r="7" stroke="#4338CA" stroke-width="1.8"/><path d="M15 15l6 6" stroke="#4338CA" stroke-width="1.8" stroke-linecap="round"/>',22),
+usr:svg('<circle cx="12" cy="12" r="10" stroke="#1E1B4B" stroke-width="2"/><circle cx="12" cy="10" r="3" fill="#1E1B4B"/><path d="M6 18c2-3 10-3 12 0" stroke="#1E1B4B" stroke-width="2"/>',22),
+chv:svg('<path d="M5 9l7 7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',14),
+doc:svg('<path d="M6 3h9l4 4v14H6z" stroke="#4338CA" stroke-width="1.6"/><path d="M9 12h7M9 16h5" stroke="#4338CA" stroke-width="1.6"/>',44),
+spn:svg('<circle cx="12" cy="12" r="9" stroke="#DDD9FB" stroke-width="3"/><path d="M12 3a9 9 0 0 1 9 9" stroke="#4338CA" stroke-width="3" stroke-linecap="round"/>',48)};
+const COL={Biology:'#DDF3E6',Math:'#FFF0CF',English:'#FFE0E8',Chemistry:'#D9F1F7',Design:'#EADFFB','I&S':'#FFE6D2'};
+const sb=v=>`<form class="sr" onsubmit="return S(event)"><button class="mg" aria-label="Search">${IC.mag}</button><input name="q" type="search" value="${esc(v)}" placeholder="Search for a class" aria-label="Search for a class" autocomplete="off"></form>`;
+const tile=n=>`<button class="t" style="background:${COL[n]}" data-n="${esc(n)}" onclick="sub(this.dataset.n)">${esc(n)}</button>`;
+const card=(l,b,a)=>`<button class="c${b?' b':''}"${a?` onclick="${a}"`:''}>${esc(l)}</button>`;
+const lab=t=>`<div class="k">${t}</div>`;
+const rowA=['Biology','Math','English'],rowB=['Chemistry','Design','I&S'];
+const loginForm=(bad,btn,act)=>`<form class="form" novalidate onsubmit="return L(event)"><h1>Log in</h1><label>School email<input id="em" class="in${bad?' bad':''}" type="email" name="email" value="${esc(em)}" placeholder="name@school.edu" autocomplete="email"${bad?' aria-invalid="true" aria-describedby="e1"':''}></label>${bad?'<p class="er" id="e1" role="alert">Invalid Email. Please use your school email.</p>':''}${act}</form>`;
+const back=`<button class="btn" style="width:200px" onclick="go('plant')">Back to topics</button>`;
+const SC={
+login:{nonav:1,ctr:1,h:()=>loginForm(0,0,'<button class="btn">Login with school email</button>')},
+invalid:{nonav:1,ctr:1,h:()=>loginForm(1,0,'<button class="btn" type="button" onclick="go(\'login\')">Back to login</button>')},
+home:{tab:'Home',h:()=>sb('')+lab('Recently Viewed:-')+`<div class="row">${rowA.map(tile).join('')}</div><button class="lnk" onclick="go('dropdown')">All Subjects ${IC.chv}</button>`},
+subjects:{tab:'Subjects',h:()=>lab('Subjects')+`<div class="row">${rowA.map(tile).join('')}</div><div class="row">${rowB.map(tile).join('')}</div>`},
+dropdown:{tab:'Subjects',h:()=>`<div class="lnk">Subjects ${IC.chv}</div><div style="display:flex;flex-direction:column;gap:6px">${[...rowA,...rowB].map(n=>card(n,0,`sub('${n.replace('&','&amp;')}')`)).join('')}</div>`},
+search:{tab:'Search',h:()=>sb('')+'<p class="mu" style="text-align:center">Type a class name, for example Biology, then press Enter.</p>'},
+results:{tab:'Search',h:()=>sb(sq)+lab('Subjects:-')+card('Biology',1,"go('biology')")},
+notfound:{tab:'Search',h:()=>sb(sq)+`<div class="ms" role="status"><h2>Class not found</h2><div>We couldn’t find “${esc(sq)}”. Check the class name or ask your teacher.</div></div>`},
+biology:{tab:'Subjects',h:()=>'<h1 class="ti">Biology</h1>'+lab('Topics:-')+card('Mitochondria')+card('Plant',1,"go('plant')")+card('Human Respiratory System')},
+plant:{tab:'Subjects',h:()=>'<h1 class="ti">Biology</h1>'+lab('Topics:-')+card('Mitochondria',0,"go('error')")+lab('Plant:-')+card('Cell Division',0,"go('loading')")+card('Human Respiratory System',0,"go('nonotes')")},
+loading:{tab:'Subjects',h:()=>`<div class="ms" role="status"><span class="spin">${IC.spn}</span><div class="k">Loading notes…</div></div>`},
+notes:{tab:'Subjects',h:()=>`<h1 class="ti" style="font-size:20px">Cell Division</h1><div class="notes" tabindex="0" aria-label="Cell Division notes"><p class="k">1. The Cell Cycle</p><p>The sequence of events by which a cell duplicates its genome, synthesises its components and divides into two daughter cells.</p><p class="k">2. Interphase</p><p>• G1: the cell grows and makes proteins<br>• S: DNA is copied<br>• G2: the cell prepares to divide</p><p class="k">3. Mitosis</p><p>• Prophase: chromosomes condense<br>• Metaphase: chromosomes line up in the middle<br>• Anaphase: sister chromatids are pulled apart<br>• Telophase: two new nuclei form</p><p class="k">4. Cytokinesis</p><p>The cytoplasm splits, producing two identical daughter cells.</p></div>`},
+nonotes:{tab:'Subjects',h:()=>`<div class="ms">${IC.doc}<h2 style="font-size:18px">No Notes Available</h2><p class="mu">Your teacher hasn’t posted notes for this topic yet.</p>${back}</div>`},
+error:{tab:'Subjects',h:()=>`<div class="ms"><h2 style="font-size:18px;color:var(--err)">Error</h2><h2 style="font-size:18px">Code:404</h2><div class="k">Please Check Your Internet Connection</div>${back}</div>`}
+};
+function render(){const d=SC[st];
+E.innerHTML=`<div class="hd"><span>“Name of the App”</span><button class="pf" aria-label="Profile">${IC.usr}</button></div><div class="bd${d.ctr?' ctr':''}">${d.h()}</div>`+(d.nonav?'':`<nav class="nb" aria-label="Main">${[['Home','home'],['Subjects','subjects'],['Search','search'],['Settings',''],['Profile','']].map(([t,g])=>`<button class="${t===d.tab?'on':''}"${t===d.tab?' aria-current="page"':''}${g?` onclick="go('${g}')"`:''}>${t}</button>`).join('')}</nav>`);
+const f=E.querySelector('#em,.sr input');if(f&&(st==='login'||st==='invalid'||st==='search'))f.focus({preventScroll:true});}
+function go(s){st=s;render();window.scrollTo(0,0);if(s==='loading')setTimeout(()=>{if(st==='loading')go('notes')},1200)}
+function sub(n){if(n==='Biology')go('biology');else{sq=n;go('notfound')}}
+function L(e){e.preventDefault();em=document.getElementById('em').value.trim();go(/^[^@\s]+@[^@\s]+\.edu(\.[a-z]{2})?$/i.test(em)?'home':'invalid');return false}
+function S(e){e.preventDefault();const v=e.target.q.value.trim();if(!v)return false;sq=v;go(/^biology$/i.test(v)?'results':'notfound');return false}
+render();
+</script>
+</body>
+</html>
